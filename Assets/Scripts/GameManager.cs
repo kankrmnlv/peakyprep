@@ -4,8 +4,6 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    InputReader reader;
-
     [SerializeField] GameObject panel;
     [SerializeField] TMP_Text scoreText;
 
@@ -13,22 +11,17 @@ public class GameManager : MonoBehaviour
 
     private bool isGameOver;
 
-    private void Awake()
-    {
-        reader = FindFirstObjectByType<InputReader>();
-    }
-
     private void OnEnable()
     {
         GameEvents.OnEnemyFinish += OnGameOver;
-        reader.OnRestartRequest += OnRestartRequested;
+        GameEvents.OnRestartGame += OnRestartRequested;
         GameEvents.OnEnemyDeath += IncreaseScore;
     }
     private void OnDisable()
     {
         GameEvents.OnEnemyFinish -= OnGameOver;
         GameEvents.OnEnemyDeath -= IncreaseScore;
-        reader.OnRestartRequest -= OnRestartRequested;
+        GameEvents.OnRestartGame -= OnRestartRequested;
     }
 
     private void Start()

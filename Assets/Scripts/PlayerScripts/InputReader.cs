@@ -5,7 +5,6 @@ using UnityEngine.Rendering;
 
 public class InputReader : MonoBehaviour
 {
-    public event Action OnRestartRequest;
     public event Action OnShootInput;
 
     private PlayerInput playerInput;
@@ -34,7 +33,7 @@ public class InputReader : MonoBehaviour
     {
         if (context.performed)
         {
-            OnRestartRequest?.Invoke();
+            GameEvents.RestartGame();
         }
     }
 

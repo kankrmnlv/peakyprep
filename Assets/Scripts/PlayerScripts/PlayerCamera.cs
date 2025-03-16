@@ -17,7 +17,7 @@ public class PlayerCamera : MonoBehaviour
 
     private void Awake()
     {
-        inputReader = FindFirstObjectByType<InputReader>();
+        inputReader = GetComponent<InputReader>();
     }
 
     private void OnEnable()
@@ -41,11 +41,12 @@ public class PlayerCamera : MonoBehaviour
     {
         Ray ray = new Ray(transform.position, transform.forward);
 
-        RaycastHit hit;
-
-        if(Physics.Raycast(ray, out hit, rayDistance, targetMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, targetMask))
         {
-            hit.collider.GetComponent<EnemyHealth>().OnEnemyTakeDamage?.Invoke(1);
+            if(hit.collider != null)
+            {
+                hit.collider.GetComponent<EnemyHealth>().OnEnemyTakeDamage?.Invoke(1);
+            }
         }
     }
 
