@@ -7,15 +7,13 @@ public class EnemyMove : MonoBehaviour
 
     [SerializeField] private float moveSpeed = 5f;
 
-    public static Action OnFinish;
-
     private void OnEnable()
     {
-        OnFinish += OnFinishLine;
+        GameEvents.OnEnemyFinish += OnFinishLine;
     }
     private void OnDisable()
     {
-        OnFinish -= OnFinishLine;
+        GameEvents.OnEnemyFinish -= OnFinishLine;
     }
 
     private void Start()
@@ -37,7 +35,7 @@ public class EnemyMove : MonoBehaviour
     {
         if (other.CompareTag("Finish"))
         {
-            OnFinish?.Invoke();
+            GameEvents.EnemyFinished();
         }
     }
 }

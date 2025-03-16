@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class EnemyHealth : MonoBehaviour
 {
-    public static event Action OnEnemyDeath;
     public Action<int> OnEnemyTakeDamage;
 
     private int currentHealth;
@@ -17,12 +16,10 @@ public class EnemyHealth : MonoBehaviour
     private void OnEnable()
     {
         OnEnemyTakeDamage += TakeDamage;
-        OnEnemyDeath += Die;
     }
     private void OnDisable()
     {
         OnEnemyTakeDamage -= TakeDamage;
-        OnEnemyDeath -= Die;
     }
     private void Start()
     {
@@ -34,20 +31,17 @@ public class EnemyHealth : MonoBehaviour
     private void Die()
     {
         Instantiate(enemyDeathParticles, transform.position, Quaternion.identity);
+        GameEvents.EnemyDied(this);
         Destroy(gameObject);
     }
 
     public void TakeDamage(int damageAmount)
     {
-        if(currentHealth > 0)
+        currentHealth -= damageAmount;
+        healthBar.value = currentHealth;
+        if(currentHealth <= 0)
         {
-            currentHealth -= damageAmount;
-            healthBar.value = currentHealth;
-        }
-        else
-        {
-            currentHealth = 0;
-            OnEnemyDeath?.Invoke();
+            Die();
         }
     }
 }

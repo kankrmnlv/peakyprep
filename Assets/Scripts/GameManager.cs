@@ -20,14 +20,14 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        EnemyMove.OnFinish += OnGameOver;
+        GameEvents.OnEnemyFinish += OnGameOver;
         reader.OnRestartRequest += OnRestartRequested;
-        EnemyHealth.OnEnemyDeath += IncreaseScore;
+        GameEvents.OnEnemyDeath += IncreaseScore;
     }
     private void OnDisable()
     {
-        EnemyMove.OnFinish -= OnGameOver;
-        EnemyHealth.OnEnemyDeath -= IncreaseScore;
+        GameEvents.OnEnemyFinish -= OnGameOver;
+        GameEvents.OnEnemyDeath -= IncreaseScore;
         reader.OnRestartRequest -= OnRestartRequested;
     }
 
@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    void IncreaseScore()
+    void IncreaseScore(EnemyHealth enemy)
     {
         score++;
         UpdateScoreText();
