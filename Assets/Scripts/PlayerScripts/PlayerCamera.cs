@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -10,23 +9,9 @@ public class PlayerCamera : MonoBehaviour
     float yRotation;
 
     InputReader inputReader;
-
-    [SerializeField] LayerMask targetMask;
-
-    [SerializeField] float rayDistance = 100f;
-
     private void Awake()
     {
         inputReader = GetComponent<InputReader>();
-    }
-
-    private void OnEnable()
-    {
-        inputReader.OnShootInput += OnShoot;
-    }
-    private void OnDisable()
-    {
-        inputReader.OnShootInput -= OnShoot;
     }
     private void Start()
     {
@@ -36,18 +21,6 @@ public class PlayerCamera : MonoBehaviour
     private void LateUpdate()
     {
         OnMouseLook();
-    }
-    void OnShoot()
-    {
-        Ray ray = new Ray(transform.position, transform.forward);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, targetMask))
-        {
-            if(hit.collider != null)
-            {
-                hit.collider.GetComponent<EnemyHealth>().OnEnemyTakeDamage?.Invoke(1);
-            }
-        }
     }
 
     void OnMouseLook()

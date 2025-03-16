@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] GameObject panel;
     [SerializeField] TMP_Text scoreText;
+    [SerializeField] TMP_Text ammoText;
 
     private int score;
 
@@ -16,17 +17,20 @@ public class GameManager : MonoBehaviour
         GameEvents.OnEnemyFinish += OnGameOver;
         GameEvents.OnRestartGame += OnRestartRequested;
         GameEvents.OnEnemyDeath += IncreaseScore;
+        InputReader.OnShootInput += UpdateAmmoText;
     }
     private void OnDisable()
     {
         GameEvents.OnEnemyFinish -= OnGameOver;
         GameEvents.OnEnemyDeath -= IncreaseScore;
         GameEvents.OnRestartGame -= OnRestartRequested;
+        InputReader.OnShootInput -= UpdateAmmoText;
     }
 
     private void Start()
     {
         score = 0;
+        UpdateAmmoText();
         UpdateScoreText();
     }
 
@@ -58,5 +62,10 @@ public class GameManager : MonoBehaviour
     void UpdateScoreText()
     {
         scoreText.text = score.ToString();
+    }
+
+    void UpdateAmmoText()
+    {
+        ammoText.text = PlayerShoot.currentAmmo.ToString();
     }
 }
