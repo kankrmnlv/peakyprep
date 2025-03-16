@@ -5,69 +5,58 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] int rayDistance;
     [SerializeField] LayerMask targetMask;
 
-    private int magasineCapacity;
+    [HideInInspector] public int maxAmmo;
 
-    public int currentAmmo { get; private set; }
+    [HideInInspector] public int currentAmmo;
+
+    [HideInInspector] public int kills;
 
     private int damage;
 
     [SerializeField] LightGun lightGun;
-    
+
+    InputReader inputReader;
+
+    private void Awake()
+    {
+        inputReader = GetComponent<InputReader>();
+    }
+
     private void OnEnable()
     {
-        InputReader.OnShootInput += OnShootEnemy;
+        inputReader.OnShootInput += OnShoot;
+        GameEvents.OnEnemyDeath += OnKill;
     }
     private void OnDisable()
     {
-        InputReader.OnShootInput -= OnShootEnemy;
+        inputReader.OnShootInput -= OnShoot;
+        GameEvents.OnEnemyDeath -= OnKill;
     }
 
     private void Start()
     {
-        magasineCapacity = lightGun.magasineSize;
-        currentAmmo = magasineCapacity;
+        maxAmmo = lightGun.magasineSize;
+        currentAmmo = maxAmmo;
         damage = lightGun.damage;
     }
+    void OnShoot()
+    {
+        Ray ray = new Ray(transform.position, transform.forward);
 
-    private void Update()
-    {
-        Debug.Log(currentAmmo);
-    }
-    void OnShootEnemy()
-    {
-        if (DoesHaveAmmo())
+        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, targetMask))
         {
-            Ray ray = new Ray(transform.position, transform.forward);
-            
-            if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, targetMask))
+            if (hit.collider != null)
             {
-                if (hit.collider != null)
-                {
-                    hit.collider.GetComponent<EnemyHealth>().OnEnemyTakeDamage?.Invoke(damage);
-                }
+                hit.collider.GetComponent<EnemyHealth>().OnEnemyTakeDamage?.Invoke(damage);
             }
-
-            UseAmmo();
         }
-        else
-        {
-            Debug.Log("No ammo");
-        }
-    }
 
-    private void UseAmmo()
-    {
         currentAmmo--;
     }
-    private bool DoesHaveAmmo()
+
+    void OnKill(EnemyHealth enemy)
     {
-        if(currentAmmo > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        Debug.Log("KILLED");
+        kills += enemy.price;
     }
 }

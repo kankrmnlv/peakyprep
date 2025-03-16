@@ -13,6 +13,8 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] Slider healthBar;
     [SerializeField] GameObject enemyDeathParticles;
 
+    public int price;
+
     private void OnEnable()
     {
         OnEnemyTakeDamage += TakeDamage;
